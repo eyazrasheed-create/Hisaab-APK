@@ -9,14 +9,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build web app (offline)
+        working-directory: web
+        run: |
+          npm install --no-audit --no-fund --legacy-peer-deps
+          npx vite build --base=./
+
+      - name: Copy web app into APK
+        run: |
+          rm -rf app/src/main/assets
+          mkdir -p app/src/main/assets
+          cp -r web/dist/. app/src/main/assets/
+          ls app/src/main/assets
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
       - name: Build APK
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
+
       - uses: actions/upload-artifact@v4
         with:
           name: RozanaHisaab-APK
