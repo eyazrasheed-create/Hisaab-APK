@@ -1,34 +1,23 @@
-plugins {
-    id 'com.android.application'
-}
+name: Build APK
 
-android {
-    namespace 'com.rozana.hisaab'
-    compileSdk 35
+on:
+  push:
+  workflow_dispatch:
 
-    defaultConfig {
-        applicationId "com.rozana.hisaab"
-        minSdk 24
-        targetSdk 35
-        versionCode 1
-        versionName "1.0"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            // Debug key se sign hoti hai taake APK seedha phone par install ho sake.
-            // Play Store ke liye: Build > Generate Signed Bundle / APK istemal karein.
-            signingConfig signingConfigs.debug
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-}
-
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RozanaHisaab-APK
+          path: app/build/outputs/apk/debug/*.apk
