@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     // App ka public link
     private static final String APP_URL =
-            "https://ais-pre-fzqhxjepwqynnyq6iwycq6-664329838473.asia-northeast1.run.app";
+            "https://rozana-hisaab-daily-expense-cash-tracker.ai.studio";
     private static final String APP_HOST = Uri.parse(APP_URL).getHost();
 
     private WebView webView;
