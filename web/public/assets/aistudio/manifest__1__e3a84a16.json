@@ -1,0 +1,44 @@
+{
+  "background_color": "#f8fafc",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Rozana Hisaab - Daily Expense &amp; Cash Tracker",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "RozanaHisaab",
+  "start_url": "https://ais-dev-fzqhxjepwqynnyq6iwycq6-664329838473.asia-northeast1.run.app/",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "https://ais-dev-fzqhxjepwqynnyq6iwycq6-664329838473.asia-northeast1.run.app/favicon.ico",
+      "type": "image/x-icon",
+      "isSquare": false,
+      "isPng": false,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 0,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
+    }
+  ],
+  "description": "Daily cash ledger and personal expense tracker to record opening balance, track expenses by category, calculate remaining cash, and view monthly summaries.",
+  "id": "Rozana Hisaab",
+  "lang": "en",
+  "display_override": [
+    "standalone",
+    "window-controls-overlay"
+  ],
+  "prefer_related_applications": true,
+  "categories": [
+    "books",
+    "books &amp; reference",
+    "design",
+    "developer",
+    "finance",
+    "lifestyle"
+  ],
+  "edge_side_panel": {
+    "preferred_width": 3
+  }
+}

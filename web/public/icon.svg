@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Background Squircle -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Inner border ring -->
+  <rect x="20" y="20" width="472" height="472" rx="96" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="4" />
+
+  <!-- Main Symbol Container (Safe zone) -->
+  <g filter="url(#shadow)">
+    <!-- Ledger Book / Wallet Base -->
+    <rect x="116" y="126" width="280" height="260" rx="36" fill="#1e293b" stroke="#334155" stroke-width="6" />
+
+    <!-- Ledger Spine / Accent -->
+    <rect x="116" y="126" width="56" height="260" rx="28" fill="url(#emeraldGrad)" />
+
+    <!-- Gold Coin Badge -->
+    <circle cx="280" cy="256" r="64" fill="url(#goldGrad)" stroke="#d97706" stroke-width="4" />
+
+    <!-- Rupee / Cash Symbol in Center -->
+    <text x="280" y="280" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="76" font-weight="900" fill="#0f172a" text-anchor="middle">₹</text>
+
+    <!-- Up/Down Cash Flow Indicators -->
+    <circle cx="356" cy="176" r="14" fill="#10b981" />
+    <path d="M356 182 L356 170 M352 174 L356 170 L360 174" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+    <circle cx="356" cy="336" r="14" fill="#ef4444" />
+    <path d="M356 330 L356 342 M352 338 L356 342 L360 338" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>

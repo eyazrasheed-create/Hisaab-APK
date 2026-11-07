@@ -1,0 +1,4 @@
+Is ZIP ko extract karein. Andar 2 folder hain: "app" aur "web".
+1) GitHub repo > Add file > Upload files
+2) "app" aur "web" dono folders drag karke daalein > Commit changes
+3) .github/workflows/blank.yml ko edit karke "blank.yml.txt" ka text paste karein > Commit
