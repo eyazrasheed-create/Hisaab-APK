@@ -26,6 +26,9 @@ import { AddTransactionModal } from './components/AddTransactionModal';
 import { SetBalanceModal } from './components/SetBalanceModal';
 import { BackupRestoreModal } from './components/BackupRestoreModal';
 import { InstallAppModal } from './components/InstallAppModal';
+
+// APK ke andar chal rahi ho to Install / APK wale buttons chhupa do
+const IS_ANDROID_APP = typeof window !== 'undefined' && window.location.hostname === 'appassets.androidplatform.net';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { usePWAInstall } from './hooks/usePWAInstall';
 
@@ -176,7 +179,7 @@ export default function App() {
             onEditTransaction={handleEditTransaction}
             onDeleteTransaction={handleDeleteTransaction}
             onOpenSetBalance={() => setIsSetBalanceOpen(true)}
-            onOpenInstallModal={() => setIsInstallModalOpen(true)}
+            onOpenInstallModal={IS_ANDROID_APP ? undefined : () => setIsInstallModalOpen(true)}
           />
         )}
 

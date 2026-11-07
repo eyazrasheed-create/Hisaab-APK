@@ -101,7 +101,8 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Zone 3: 1 Primary CTA Button + Quick utilities */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Install / APK button */}
+            {/* Install / APK button (APK ke andar nahi dikhta) */}
+            {window.location.hostname !== 'appassets.androidplatform.net' && (
             <button
               onClick={onOpenInstallModal}
               className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors whitespace-nowrap shadow-2xs"
@@ -110,6 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
               <Smartphone className="w-3.5 h-3.5 text-emerald-600" />
               <span>Install / APK</span>
             </button>
+            )}
 
             {/* Language dropdown / toggle */}
             <div className="relative group">
