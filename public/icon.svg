@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient: Deep Royal Emerald into Dark Slate -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="45%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- Gold Accent Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="30%" stop-color="#facc15" />
+      <stop offset="70%" stop-color="#eab308" />
+      <stop offset="100%" stop-color="#ca8a04" />
+    </linearGradient>
+
+    <!-- Emerald Shimmer -->
+    <linearGradient id="emeraldShimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <!-- Ledger Cover Gradient -->
+    <linearGradient id="bookCover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
+
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#ca8a04" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- 1. Background Squircle (Full 512x512 with standard 112px radius) -->
+  <rect width="512" height="512" rx="116" fill="url(#bgGrad)" />
+
+  <!-- Subtle Inner Border Highlight -->
+  <rect x="16" y="16" width="480" height="480" rx="100" fill="none" stroke="rgba(255, 255, 255, 0.15)" stroke-width="3" />
+
+  <!-- 2. Main Icon Composition (Safely centered within 400x400 safe-zone for Maskable / Adaptive APK) -->
+  <g filter="url(#cardShadow)">
+    <!-- Ledger Book Back Shadow & Pages Base -->
+    <rect x="110" y="106" width="292" height="300" rx="28" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+    <rect x="118" y="112" width="284" height="288" rx="24" fill="#f8fafc" />
+
+    <!-- Ledger Book Front Cover (Slate/Emerald) -->
+    <rect x="122" y="112" width="276" height="288" rx="24" fill="url(#bookCover)" stroke="url(#goldGrad)" stroke-width="3" />
+
+    <!-- Stitched Spine Binding (Emerald Leather Texture) -->
+    <rect x="122" y="112" width="56" height="288" rx="24" fill="url(#emeraldShimmer)" />
+    <!-- Golden Binding Line -->
+    <line x1="178" y1="112" x2="178" y2="400" stroke="url(#goldGrad)" stroke-width="3" />
+
+    <!-- Gold Bookmark Ribbon hanging out at bottom -->
+    <path d="M202 112 L202 200 L216 186 L230 200 L230 112 Z" fill="url(#goldGrad)" opacity="0.9" />
+
+    <!-- Ledger Title Header Lines -->
+    <rect x="200" y="152" width="168" height="8" rx="4" fill="#334155" />
+    <rect x="200" y="172" width="110" height="6" rx="3" fill="#475569" />
+
+    <!-- 3. CENTRAL GOLD EMBOSSED CASH SEAL (Rs / Khata Coin) -->
+    <g filter="url(#goldGlow)">
+      <!-- Outer Gold Rim -->
+      <circle cx="282" cy="276" r="74" fill="url(#goldGrad)" stroke="#78350f" stroke-width="4" />
+      <!-- Inner Coin Inset Ring -->
+      <circle cx="282" cy="276" r="64" fill="#0f172a" stroke="#ca8a04" stroke-width="3" />
+
+      <!-- Rupee / Cash Bold Text "Rs" -->
+      <text x="282" y="296"
+            font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
+            font-size="52"
+            font-weight="900"
+            fill="url(#goldGrad)"
+            letter-spacing="-1px"
+            text-anchor="middle">Rs</text>
+    </g>
+
+    <!-- Upward Cash Inflow Green Badge (Aamad) -->
+    <circle cx="366" cy="216" r="16" fill="#10b981" stroke="#ffffff" stroke-width="2" />
+    <path d="M366 224 L366 210 M360 215 L366 209 L372 215" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Downward Cash Outflow Red Badge (Kharcha) -->
+    <circle cx="366" cy="340" r="16" fill="#ef4444" stroke="#ffffff" stroke-width="2" />
+    <path d="M366 332 L366 346 M360 341 L366 347 L372 341" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>

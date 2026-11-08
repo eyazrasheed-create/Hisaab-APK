@@ -1,0 +1,6 @@
+{
+  "name": "Rozana Hisaab - Daily Expense & Cash Tracker",
+  "description": "Daily cash ledger and personal expense tracker to record opening balance, track expenses by category, calculate remaining cash, and view monthly summaries.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
