@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { AppSettings, Category, CurrencySymbol, Language, Transaction, TransactionType, KhataPerson, KhataTransaction } from './types';
+import { AppSettings, Category, CurrencySymbol, Language, Transaction, TransactionType, KhataPerson, KhataTransaction, UserProfile } from './types';
 import {
   calculateAllKhataStats,
   calculateDayLedger,
@@ -21,6 +21,9 @@ import {
   saveTransactions,
   saveKhataPersons,
   saveKhataTransactions,
+  loadActiveUser,
+  saveActiveUser,
+  clearAllData,
 } from './utils/storage';
 import { getTodayDateString } from './utils/formatters';
 import { Header } from './components/Header';
@@ -34,16 +37,19 @@ import { SetBalanceModal } from './components/SetBalanceModal';
 import { BackupRestoreModal } from './components/BackupRestoreModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { InstallAppModal } from './components/InstallAppModal';
+import { AuthScreen } from './components/AuthScreen';
 import { usePWAInstall } from './hooks/usePWAInstall';
+import { useMobileBackHandler } from './hooks/useMobileBackGesture';
 
 export default function App() {
+  const [activeUser, setActiveUser] = useState<UserProfile | null>(loadActiveUser);
   const [settings, setSettingsState] = useState<AppSettings>(loadSettings);
   const [categories, setCategoriesState] = useState<Category[]>(loadCategories);
   const [transactions, setTransactionsState] = useState<Transaction[]>(loadTransactions);
   const [khataPersons, setKhataPersonsState] = useState<KhataPerson[]>(loadKhataPersons);
   const [khataTransactions, setKhataTransactionsState] = useState<KhataTransaction[]>(loadKhataTransactions);
 
-  const [currentTab, setCurrentTab] = useState<'daily' | 'khata' | 'monthly' | 'transactions' | 'budgets'>('daily');
+  const [currentTab, setCurrentTab] = useState<'daily' | 'khata' | 'monthly' | 'transactions' | 'budgets'>('khata');
   const [currentDate, setCurrentDate] = useState<string>(getTodayDateString());
   const [selectedMonth, setSelectedMonth] = useState<string>(() => {
     const today = getTodayDateString();
@@ -57,6 +63,13 @@ export default function App() {
   const [isSetBalanceOpen, setIsSetBalanceOpen] = useState(false);
   const [isBackupOpen, setIsBackupOpen] = useState(false);
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+
+  // Android edge swipe back and hardware back button navigation
+  useMobileBackHandler(isAddModalOpen, () => { setIsAddModalOpen(false); setEditingTransaction(null); }, 'add-expense-modal');
+  useMobileBackHandler(isSetBalanceOpen, () => setIsSetBalanceOpen(false), 'set-balance-modal');
+  useMobileBackHandler(isBackupOpen, () => setIsBackupOpen(false), 'backup-modal');
+  useMobileBackHandler(isInstallModalOpen, () => setIsInstallModalOpen(false), 'install-modal');
+  useMobileBackHandler(currentTab !== 'khata', () => setCurrentTab('khata'), 'tab-khata');
 
   // PWA Install hook
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
@@ -281,6 +294,23 @@ export default function App() {
     updateKhataTransactions(khataTransactions.filter((t) => t.id !== txId));
   };
 
+  const handleLogout = () => {
+    saveActiveUser(null);
+    setActiveUser(null);
+  };
+
+  const handleResetAllToZero = () => {
+    clearAllData(true);
+    updateTransactions([]);
+    updateKhataPersons([]);
+    updateKhataTransactions([]);
+    setSettingsState(loadSettings());
+  };
+
+  if (!activeUser) {
+    return <AuthScreen onLogin={(user) => setActiveUser(user)} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col text-slate-900 font-sans w-full max-w-full overflow-x-hidden">
       {/* Top Header */}
@@ -295,6 +325,8 @@ export default function App() {
         currency={settings.currency}
         setCurrency={(curr: CurrencySymbol) => updateSettings({ ...settings, currency: curr })}
         onOpenInstallModal={() => setIsInstallModalOpen(true)}
+        activeUser={activeUser}
+        onLogout={handleLogout}
       />
 
       {/* Main Container */}
@@ -367,6 +399,9 @@ export default function App() {
             setSettings={updateSettings}
             onOpenBackup={() => setIsBackupOpen(true)}
             onOpenSetBalance={() => setIsSetBalanceOpen(true)}
+            activeUser={activeUser}
+            onLogout={handleLogout}
+            onClearAllData={handleResetAllToZero}
           />
         )}
       </main>
@@ -375,9 +410,9 @@ export default function App() {
       <footer className="border-t border-slate-200 bg-white py-6 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-800">Rozana Hisaab</span>
+            <span className="font-bold text-slate-800">Easy Khata Book</span>
             <span aria-hidden="true">·</span>
-            <span>Aap ka zati cash aur kharcha ledger</span>
+            <span>Digital Udhaar & Rozana Cash Ledger</span>
           </div>
 
           <div className="flex items-center gap-4">

@@ -96,7 +96,7 @@ export const KhataPersonDetailView: React.FC<KhataPersonDetailViewProps> = ({
       statusText = `*Hisaab Mukammal Clear Hai (0)* ✓`;
     }
 
-    const message = `*Rozana Hisaab - Khata Summary*
+    const message = `*Easy Khata Book - Khata Summary*
 👤 *Naam:* ${person.name}
 📅 *Tareekh:* ${today}
 
@@ -129,14 +129,42 @@ _Barahe karam hisaab check kar lein. Shukriya!_`;
     setTimeout(() => setCopied(false), 2500);
   };
 
+  // Touch swipe-right gesture detector for mobile (Swipe Back like native Easy Khata)
+  const touchStartXRef = React.useRef<number | null>(null);
+  const touchStartYRef = React.useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
+
+    const startedNearEdge = touchStartXRef.current < 70 && deltaX > 50;
+    const strongSwipeRight = deltaX > 90;
+
+    if ((startedNearEdge || strongSwipeRight) && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+      onBack();
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
+
   return (
-    <div className="space-y-6">
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="space-y-6 touch-pan-y"
+    >
       {/* Top Navigation & Person Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+            className="p-2 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
             title="Wapis Jayein (Back to Khata List)"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -475,6 +503,29 @@ _Barahe karam hisaab check kar lein. Shukriya!_`;
             </table>
           </div>
         )}
+      </div>
+
+      {/* Sticky Bottom Action Bar - Authentic Easy Khata 2-Button Pattern */}
+      <div className="sticky bottom-0 -mx-3 sm:-mx-6 lg:-mx-8 p-3 sm:p-4 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-xl z-30">
+        <div className="max-w-4xl mx-auto flex items-center gap-3">
+          {/* Red Button: Maine Diye (You Gave / Kharcha Kiya) */}
+          <button
+            onClick={() => onOpenAddEntry('gave')}
+            className="flex-1 py-3 sm:py-3.5 px-3 sm:px-4 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white rounded-xl font-black text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
+          >
+            <ArrowUpRight className="w-4 h-4 sm:w-5 h-5 shrink-0" />
+            <span>- Maine Diye (You Gave)</span>
+          </button>
+
+          {/* Green Button: Maine Liye (You Received / Wapis Mile) */}
+          <button
+            onClick={() => onOpenAddEntry('received')}
+            className="flex-1 py-3 sm:py-3.5 px-3 sm:px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-xl font-black text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
+          >
+            <ArrowDownLeft className="w-4 h-4 sm:w-5 h-5 shrink-0" />
+            <span>+ Maine Liye (You Got)</span>
+          </button>
+        </div>
       </div>
     </div>
   );

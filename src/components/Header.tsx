@@ -1,7 +1,7 @@
 import React from 'react';
-import { CurrencySymbol, Language } from '../types';
+import { CurrencySymbol, Language, UserProfile } from '../types';
 import { t } from '../utils/translations';
-import { Plus, Wallet, Calendar, PieChart, ListFilter, Tag, Globe, Settings as SettingsIcon, Smartphone, Users } from 'lucide-react';
+import { Plus, Wallet, Calendar, PieChart, ListFilter, Tag, Globe, Settings as SettingsIcon, Smartphone, Users, User, LogOut } from 'lucide-react';
 
 interface HeaderProps {
   currentTab: 'daily' | 'khata' | 'monthly' | 'transactions' | 'budgets';
@@ -14,6 +14,8 @@ interface HeaderProps {
   currency: CurrencySymbol;
   setCurrency: (curr: CurrencySymbol) => void;
   onOpenInstallModal?: () => void;
+  activeUser?: UserProfile | null;
+  onLogout?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -27,6 +29,8 @@ export const Header: React.FC<HeaderProps> = ({
   currency,
   setCurrency,
   onOpenInstallModal,
+  activeUser,
+  onLogout,
 }) => {
   const isAndroidApk = typeof window !== 'undefined' && window.location.hostname === 'appassets.androidplatform.net';
   return (
@@ -36,33 +40,26 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center justify-between gap-1.5 sm:gap-4 h-14 sm:h-16 w-full max-w-full">
           {/* Zone 1: Brand title */}
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs font-bold text-xs sm:text-base">
-              ₹
-            </div>
+            <img
+              src="/app-icon.png"
+              alt="Easy Khata Book"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl shadow-xs object-cover shrink-0"
+            />
             <div>
-              <div className="text-xs sm:text-base font-black tracking-tight text-slate-900 whitespace-nowrap">
-                Rozana Hisaab
+              <div className="text-xs sm:text-base font-black tracking-tight text-slate-900 whitespace-nowrap flex items-center gap-1.5">
+                <span>Easy Khata Book</span>
+                <span className="text-[9px] uppercase font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-md">
+                  Bazaar
+                </span>
               </div>
               <div className="text-[10px] text-slate-400 font-medium hidden sm:block whitespace-nowrap">
-                Daily Cash & Kharcha Tracker
+                Digital Udhaar & Cash Book
               </div>
             </div>
           </div>
 
-          {/* Zone 2: Desktop Navigation Links */}
+          {/* Zone 2: Desktop Navigation Links (Easy Khata order: Khata first) */}
           <nav className="hidden md:flex items-center gap-1.5 sm:gap-2">
-            <button
-              onClick={() => setCurrentTab('daily')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap shrink-0 ${
-                currentTab === 'daily'
-                  ? 'bg-slate-100 text-slate-900 shadow-2xs font-bold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <Calendar className="w-3.5 h-3.5" />
-              <span>{t('tabDaily', language)}</span>
-            </button>
-
             <button
               onClick={() => setCurrentTab('khata')}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-colors whitespace-nowrap shrink-0 ${
@@ -72,7 +69,19 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Users className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Logon Ka Hisaab (Khata)</span>
+              <span>Khata (Logon Ka Hisaab)</span>
+            </button>
+
+            <button
+              onClick={() => setCurrentTab('daily')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap shrink-0 ${
+                currentTab === 'daily'
+                  ? 'bg-slate-100 text-slate-900 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
+            >
+              <Calendar className="w-3.5 h-3.5" />
+              <span>Cash Book (Rozana Rokar)</span>
             </button>
 
             <button
@@ -84,7 +93,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <PieChart className="w-3.5 h-3.5" />
-              <span>{t('tabMonthly', language)}</span>
+              <span>Reports (Khulasa)</span>
             </button>
 
             <button
@@ -96,7 +105,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <ListFilter className="w-3.5 h-3.5" />
-              <span>{t('tabTransactions', language)}</span>
+              <span>Entries</span>
             </button>
 
             <button
@@ -108,7 +117,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Tag className="w-3.5 h-3.5" />
-              <span>{t('tabBudgets', language)}</span>
+              <span>Settings</span>
             </button>
           </nav>
 
@@ -191,47 +200,64 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden sm:inline">{t('addExpense', language)}</span>
               <span className="sm:hidden">Kharcha</span>
             </button>
+
+            {/* Active User Avatar / Switch */}
+            {activeUser && (
+              <button
+                onClick={onLogout}
+                className="flex items-center gap-1 px-2 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg text-emerald-900 transition-colors shrink-0"
+                title={`${activeUser.name} (${activeUser.identifier}) - Click to logout / switch account`}
+              >
+                <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+                  {activeUser.name.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-[11px] font-bold max-w-[70px] sm:max-w-[110px] truncate hidden sm:inline">
+                  {activeUser.name}
+                </span>
+                <LogOut className="w-3 h-3 text-emerald-700 shrink-0" />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Mobile Sub-Navigation Bar: Clean, Grid Layout, No Horizontal Scroll */}
+        {/* Mobile Sub-Navigation Bar: Easy Khata layout with Khata First */}
         <div className="grid grid-cols-5 md:hidden py-1.5 border-t border-slate-100 text-[11px] text-center w-full">
-          <button
-            onClick={() => setCurrentTab('daily')}
-            className={`py-1.5 px-1 rounded-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-colors ${
-              currentTab === 'daily' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <Calendar className="w-4 h-4" />
-            <span className="truncate max-w-full">Hisaab</span>
-          </button>
-
           <button
             onClick={() => setCurrentTab('khata')}
             className={`py-1.5 px-1 rounded-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-colors ${
               currentTab === 'khata'
-                ? 'bg-emerald-600 text-white'
-                : 'bg-emerald-50 text-emerald-900 border border-emerald-200'
+                ? 'bg-emerald-600 text-white font-black shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <Users className="w-4 h-4 text-emerald-600" />
+            <Users className="w-4 h-4" />
             <span className="truncate max-w-full font-black">Khata</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentTab('daily')}
+            className={`py-1.5 px-1 rounded-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-colors ${
+              currentTab === 'daily' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <Calendar className="w-4 h-4" />
+            <span className="truncate max-w-full">Cash Book</span>
           </button>
 
           <button
             onClick={() => setCurrentTab('monthly')}
             className={`py-1.5 px-1 rounded-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-colors ${
-              currentTab === 'monthly' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'
+              currentTab === 'monthly' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
             <PieChart className="w-4 h-4" />
-            <span className="truncate max-w-full">Mahana</span>
+            <span className="truncate max-w-full">Reports</span>
           </button>
 
           <button
             onClick={() => setCurrentTab('transactions')}
             className={`py-1.5 px-1 rounded-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-colors ${
-              currentTab === 'transactions' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'
+              currentTab === 'transactions' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
             <ListFilter className="w-4 h-4" />
@@ -241,11 +267,11 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setCurrentTab('budgets')}
             className={`py-1.5 px-1 rounded-lg font-bold flex flex-col items-center justify-center gap-0.5 transition-colors ${
-              currentTab === 'budgets' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'
+              currentTab === 'budgets' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
             <Tag className="w-4 h-4" />
-            <span className="truncate max-w-full">Budget</span>
+            <span className="truncate max-w-full">Settings</span>
           </button>
         </div>
       </div>

@@ -40,15 +40,17 @@ export const InstallAppModal: React.FC<InstallAppModalProps> = ({
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shadow-xs">
-              <Smartphone className="w-5 h-5 text-white" />
-            </div>
+            <img
+              src="/app-icon.png"
+              alt="Easy Khata Book"
+              className="w-10 h-10 rounded-xl shadow-xs object-cover"
+            />
             <div>
               <h3 className="text-base font-extrabold tracking-tight">
                 Mobile Par Install Karein / APK
               </h3>
               <p className="text-xs text-slate-300">
-                Rozana Hisaab ko phone par application ki tarah chalayein
+                Easy Khata Book ko phone par application ki tarah chalayein
               </p>
             </div>
           </div>
@@ -127,7 +129,7 @@ export const InstallAppModal: React.FC<InstallAppModalProps> = ({
                   <li>Phone ke Chrome browser me ye link kholein.</li>
                   <li>Chrome ke upar daayen (top-right) bane <strong>(⋮) 3 dots menu</strong> par tap karein.</li>
                   <li>Menu me se <strong>"Install app"</strong> ya <strong>"Add to Home screen"</strong> chunein.</li>
-                  <li>Aapke mobile par Rozana Hisaab ka APK icon install ho jayega!</li>
+                  <li>Aapke mobile par Easy Khata Book ka icon install ho jayega!</li>
                 </ol>
               </div>
 

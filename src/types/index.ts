@@ -110,3 +110,14 @@ export interface PersonBalance {
   lastTransactionDate?: string;
 }
 
+export interface UserProfile {
+  id: string;
+  name: string;
+  loginType: 'phone' | 'email';
+  identifier: string; // phone number or email
+  pin?: string;
+  businessName?: string;
+  createdAt: number;
+  lastLoginAt: number;
+}
+

@@ -185,9 +185,9 @@ export const AppIconManager: React.FC = () => {
                   />
                 ) : (
                   <img
-                    src="/icon.svg"
-                    alt="Rozana Hisaab Icon"
-                    className="w-full h-full object-contain"
+                    src="/app-icon.png"
+                    alt="Easy Khata Book Icon"
+                    className="w-full h-full object-cover"
                   />
                 )}
               </div>
@@ -197,7 +197,7 @@ export const AppIconManager: React.FC = () => {
             </div>
           </div>
 
-          <div className="text-sm font-extrabold text-white tracking-tight">Rozana Hisaab</div>
+          <div className="text-sm font-extrabold text-white tracking-tight">Easy Khata Book</div>
           <div className="text-[11px] text-emerald-300 font-mono mt-0.5">Mobile Home Screen Icon</div>
           <p className="text-[10px] text-slate-400 mt-2 max-w-[200px]">
             Jab aap mobile me app install karenge ya APK banayenge toh ye icon nazar aayega.

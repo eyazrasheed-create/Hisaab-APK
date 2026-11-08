@@ -88,7 +88,39 @@ export const DailyLedgerView: React.FC<DailyLedgerViewProps> = ({
   const budgetUsedPercent = dailyExpenseBudget > 0 ? (dayLedger.totalExpense / dailyExpenseBudget) * 100 : 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
+      {/* Cash Book Title Bar */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold shadow-xs">
+            <Wallet className="w-5 h-5 text-emerald-400" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                Cash Book (Rozana Rokar)
+              </h2>
+              <span className="text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full">
+                Easy Khata
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Rozana ki kul aamad, kharche aur baqi cash in hand ka hisaab
+            </p>
+          </div>
+        </div>
+
+        {onNavigateToKhata && (
+          <button
+            onClick={onNavigateToKhata}
+            className="text-xs font-bold text-emerald-700 hover:text-emerald-900 transition-colors flex items-center gap-1 shrink-0"
+          >
+            <span>Logon Ka Khata</span>
+            <span>→</span>
+          </button>
+        )}
+      </div>
+
       {/* Date Navigation Bar */}
       <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 sm:gap-2">

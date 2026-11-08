@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { AppSettings, Category, CurrencySymbol } from '../types';
+import { AppSettings, Category, CurrencySymbol, UserProfile } from '../types';
 import { formatCurrency } from '../utils/formatters';
 import { CategoryIcon } from './CategoryIcon';
-import { Plus, Tag, Target, Settings, Database, Edit2, Check } from 'lucide-react';
+import { Plus, Tag, Target, Settings, Database, Edit2, Check, User, LogOut, Trash2, ShieldCheck } from 'lucide-react';
 import { AppIconManager } from './AppIconManager';
 
 interface CategoriesBudgetViewProps {
@@ -12,6 +12,9 @@ interface CategoriesBudgetViewProps {
   setSettings: (s: AppSettings) => void;
   onOpenBackup: () => void;
   onOpenSetBalance: () => void;
+  activeUser?: UserProfile | null;
+  onLogout?: () => void;
+  onClearAllData?: () => void;
 }
 
 export const CategoriesBudgetView: React.FC<CategoriesBudgetViewProps> = ({
@@ -21,6 +24,9 @@ export const CategoriesBudgetView: React.FC<CategoriesBudgetViewProps> = ({
   setSettings,
   onOpenBackup,
   onOpenSetBalance,
+  activeUser,
+  onLogout,
+  onClearAllData,
 }) => {
   const { language, currency, dailyExpenseBudget = 2500 } = settings;
   const [editingBudgetCatId, setEditingBudgetCatId] = useState<string | null>(null);
@@ -267,6 +273,64 @@ export const CategoriesBudgetView: React.FC<CategoriesBudgetViewProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Easy Khata Account Profile & Multi-User Switch */}
+        {activeUser && (
+          <div className="bg-white rounded-2xl border border-emerald-200 p-5 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-base shadow-xs">
+                  {activeUser.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">{activeUser.name}</h3>
+                  <p className="text-xs text-slate-500 font-mono">
+                    {activeUser.identifier} {activeUser.businessName ? `• ${activeUser.businessName}` : ''}
+                  </p>
+                </div>
+              </div>
+
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Log Out / Account Badlein</span>
+                </button>
+              )}
+            </div>
+
+            <div className="text-[11px] text-slate-500 bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-100 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Aapka account is mobile par mahfooz hai. Kisi doosre user ka data share nahi hota.</span>
+            </div>
+          </div>
+        )}
+
+        {/* Danger Zone: Clear all ledger data */}
+        {onClearAllData && (
+          <div className="bg-rose-50/60 rounded-2xl border border-rose-200 p-5 shadow-xs space-y-3">
+            <div className="flex items-center gap-2 text-rose-800">
+              <Trash2 className="w-4 h-4 shrink-0" />
+              <h3 className="text-sm font-bold">Tamam Khata & Cash Data Clear Karein</h3>
+            </div>
+            <p className="text-xs text-slate-600">
+              Agar aap chahte hain ke tamam purana data (dosto k name, paise, kharche) bilkul saaf (0 balance) ho jaye, to yahan se clear karein.
+            </p>
+            <button
+              onClick={() => {
+                if (window.confirm('Kiya aap waqai tamam khata aur kharchay delete kar ke bilkul saaf (0 balance) karna chahte hain?')) {
+                  onClearAllData();
+                }
+              }}
+              className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition-colors shadow-xs cursor-pointer inline-flex items-center gap-1.5"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Saara Data Clear Karein (Reset to Zero)</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* App Icon & APK Branding Manager */}

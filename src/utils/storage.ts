@@ -1,22 +1,65 @@
-import { AppSettings, Category, DayLedgerData, MonthlyStats, Transaction, KhataPerson, KhataTransaction, PersonBalance } from '../types';
+import { AppSettings, Category, DayLedgerData, MonthlyStats, Transaction, KhataPerson, KhataTransaction, PersonBalance, UserProfile } from '../types';
 import { DEFAULT_CATEGORIES } from './constants';
 import { getTodayDateString } from './formatters';
 
 const STORAGE_KEYS = {
-  TRANSACTIONS: 'rh_transactions_v1',
-  CATEGORIES: 'rh_categories_v1',
-  SETTINGS: 'rh_settings_v1',
-  KHATA_PERSONS: 'rh_khata_persons_v1',
-  KHATA_TRANSACTIONS: 'rh_khata_transactions_v1',
+  TRANSACTIONS: 'rh_transactions_v2',
+  CATEGORIES: 'rh_categories_v2',
+  SETTINGS: 'rh_settings_v2',
+  KHATA_PERSONS: 'rh_khata_persons_v2',
+  KHATA_TRANSACTIONS: 'rh_khata_transactions_v2',
+  ACTIVE_USER: 'rh_active_user_v2',
+  USERS_LIST: 'rh_users_list_v2',
 };
 
 export const getDefaultSettings = (): AppSettings => ({
   currency: 'Rs',
   language: 'roman_urdu',
-  initialBalance: 50000,
-  initialBalanceDate: '2026-11-01',
+  initialBalance: 0,
+  initialBalanceDate: getTodayDateString(),
   dailyExpenseBudget: 2500,
 });
+
+export const loadActiveUser = (): UserProfile | null => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.ACTIVE_USER);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+};
+
+export const saveActiveUser = (user: UserProfile | null): void => {
+  try {
+    if (!user) {
+      localStorage.removeItem(STORAGE_KEYS.ACTIVE_USER);
+    } else {
+      localStorage.setItem(STORAGE_KEYS.ACTIVE_USER, JSON.stringify(user));
+    }
+  } catch (e) {
+    console.error('Failed to save active user', e);
+  }
+};
+
+export const loadRegisteredUsers = (): UserProfile[] => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.USERS_LIST);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+export const saveRegisteredUsers = (users: UserProfile[]): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.USERS_LIST, JSON.stringify(users));
+  } catch (e) {
+    console.error('Failed to save users list', e);
+  }
+};
 
 export const loadSettings = (): AppSettings => {
   try {
@@ -61,9 +104,7 @@ export const loadTransactions = (): Transaction[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
     if (!raw) {
-      const sample = generateSampleData();
-      saveTransactions(sample);
-      return sample;
+      return []; // Pristine clean state for every new user/install!
     }
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -521,10 +562,7 @@ export const loadKhataPersons = (): KhataPerson[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.KHATA_PERSONS);
     if (!raw) {
-      const sample = generateSampleKhata();
-      saveKhataPersons(sample.persons);
-      saveKhataTransactions(sample.transactions);
-      return sample.persons;
+      return []; // Clean empty state for new installations
     }
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -546,9 +584,7 @@ export const loadKhataTransactions = (): KhataTransaction[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.KHATA_TRANSACTIONS);
     if (!raw) {
-      const sample = generateSampleKhata();
-      saveKhataTransactions(sample.transactions);
-      return sample.transactions;
+      return []; // Clean empty state for new installations
     }
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -650,4 +686,25 @@ export const calculateAllKhataStats = (
     balances,
   };
 };
+
+export const clearAllData = (preserveAuth: boolean = true): void => {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.TRANSACTIONS);
+    localStorage.removeItem(STORAGE_KEYS.KHATA_PERSONS);
+    localStorage.removeItem(STORAGE_KEYS.KHATA_TRANSACTIONS);
+    saveSettings(getDefaultSettings());
+    if (!preserveAuth) {
+      localStorage.removeItem(STORAGE_KEYS.ACTIVE_USER);
+    }
+    // Also remove old legacy keys if any
+    localStorage.removeItem('rozana_hisaab_transactions');
+    localStorage.removeItem('rozana_hisaab_settings');
+    localStorage.removeItem('rozana_hisaab_categories');
+    localStorage.removeItem('rh_khata_persons');
+    localStorage.removeItem('rh_khata_transactions');
+  } catch (e) {
+    console.error('Failed to clear all data', e);
+  }
+};
+
 

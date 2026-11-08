@@ -122,7 +122,7 @@ export const AddKhataPersonModal: React.FC<AddKhataPersonModalProps> = ({
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Bhai (Usman), Ali Mazdoor, Rashid Partner"
+                placeholder="Banda ya Customer ka naam (e.g. Dost, Dukan, Customer)"
                 className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-slate-900"
                 autoFocus
               />
