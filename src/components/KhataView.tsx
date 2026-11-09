@@ -35,6 +35,8 @@ interface KhataViewProps {
     existingId?: string
   ) => void;
   onDeleteKhataTransaction: (txId: string) => void;
+  selectedPersonId?: string | null;
+  onSelectPerson?: (id: string | null) => void;
 }
 
 export const KhataView: React.FC<KhataViewProps> = ({
@@ -46,8 +48,18 @@ export const KhataView: React.FC<KhataViewProps> = ({
   onDeletePerson,
   onSaveKhataTransaction,
   onDeleteKhataTransaction,
+  selectedPersonId: selectedPersonIdProp,
+  onSelectPerson: onSelectPersonProp,
 }) => {
-  const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
+  const [internalSelectedPersonId, setInternalSelectedPersonId] = useState<string | null>(null);
+  const selectedPersonId = selectedPersonIdProp !== undefined ? selectedPersonIdProp : internalSelectedPersonId;
+  const setSelectedPersonId = (id: string | null) => {
+    if (onSelectPersonProp) {
+      onSelectPersonProp(id);
+    } else {
+      setInternalSelectedPersonId(id);
+    }
+  };
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'receivable' | 'payable' | 'settled'>('all');
 

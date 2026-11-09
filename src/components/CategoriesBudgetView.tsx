@@ -3,7 +3,6 @@ import { AppSettings, Category, CurrencySymbol, UserProfile } from '../types';
 import { formatCurrency } from '../utils/formatters';
 import { CategoryIcon } from './CategoryIcon';
 import { Plus, Tag, Target, Settings, Database, Edit2, Check, User, LogOut, Trash2, ShieldCheck } from 'lucide-react';
-import { AppIconManager } from './AppIconManager';
 
 interface CategoriesBudgetViewProps {
   categories: Category[];
@@ -332,9 +331,6 @@ export const CategoriesBudgetView: React.FC<CategoriesBudgetViewProps> = ({
           </div>
         )}
       </div>
-
-      {/* App Icon & APK Branding Manager */}
-      <AppIconManager />
     </div>
   );
 };

@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const isAndroidApk = typeof window !== 'undefined' && window.location.hostname === 'appassets.androidplatform.net';
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 w-full max-w-full overflow-hidden">
+    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 w-full max-w-full overflow-hidden pt-7 sm:pt-0">
       {/* Main Top Bar Contract */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-1.5 sm:gap-4 h-14 sm:h-16 w-full max-w-full">

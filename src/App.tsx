@@ -50,6 +50,7 @@ export default function App() {
   const [khataTransactions, setKhataTransactionsState] = useState<KhataTransaction[]>(loadKhataTransactions);
 
   const [currentTab, setCurrentTab] = useState<'daily' | 'khata' | 'monthly' | 'transactions' | 'budgets'>('khata');
+  const [selectedKhataPersonId, setSelectedKhataPersonId] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState<string>(getTodayDateString());
   const [selectedMonth, setSelectedMonth] = useState<string>(() => {
     const today = getTodayDateString();
@@ -65,6 +66,7 @@ export default function App() {
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
 
   // Android edge swipe back and hardware back button navigation
+  useMobileBackHandler(Boolean(selectedKhataPersonId), () => setSelectedKhataPersonId(null), 'person-detail');
   useMobileBackHandler(isAddModalOpen, () => { setIsAddModalOpen(false); setEditingTransaction(null); }, 'add-expense-modal');
   useMobileBackHandler(isSetBalanceOpen, () => setIsSetBalanceOpen(false), 'set-balance-modal');
   useMobileBackHandler(isBackupOpen, () => setIsBackupOpen(false), 'backup-modal');
@@ -311,26 +313,39 @@ export default function App() {
     return <AuthScreen onLogin={(user) => setActiveUser(user)} />;
   }
 
+  const isPersonDetailOpen = currentTab === 'khata' && Boolean(selectedKhataPersonId);
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col text-slate-900 font-sans w-full max-w-full overflow-x-hidden">
-      {/* Top Header */}
-      <Header
-        currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
-        onOpenAddModal={handleOpenAddModal}
-        onOpenSetBalance={() => setIsSetBalanceOpen(true)}
-        onOpenBackup={() => setIsBackupOpen(true)}
-        language={settings.language}
-        setLanguage={(lang: Language) => updateSettings({ ...settings, language: lang })}
-        currency={settings.currency}
-        setCurrency={(curr: CurrencySymbol) => updateSettings({ ...settings, currency: curr })}
-        onOpenInstallModal={() => setIsInstallModalOpen(true)}
-        activeUser={activeUser}
-        onLogout={handleLogout}
-      />
+      {/* Top Header (Hidden when customer detail is open for 100% clean Easy Khata look) */}
+      {!isPersonDetailOpen && (
+        <Header
+          currentTab={currentTab}
+          setCurrentTab={(tab) => {
+            setSelectedKhataPersonId(null);
+            setCurrentTab(tab);
+          }}
+          onOpenAddModal={handleOpenAddModal}
+          onOpenSetBalance={() => setIsSetBalanceOpen(true)}
+          onOpenBackup={() => setIsBackupOpen(true)}
+          language={settings.language}
+          setLanguage={(lang: Language) => updateSettings({ ...settings, language: lang })}
+          currency={settings.currency}
+          setCurrency={(curr: CurrencySymbol) => updateSettings({ ...settings, currency: curr })}
+          onOpenInstallModal={() => setIsInstallModalOpen(true)}
+          activeUser={activeUser}
+          onLogout={handleLogout}
+        />
+      )}
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 overflow-x-hidden">
+      <main
+        className={`flex-1 w-full mx-auto ${
+          isPersonDetailOpen
+            ? 'p-0 max-w-full'
+            : 'max-w-7xl px-3 sm:px-6 lg:px-8 py-4 sm:py-8'
+        } overflow-x-hidden`}
+      >
         {currentTab === 'daily' && (
           <DailyLedgerView
             currentDate={currentDate}
@@ -364,6 +379,8 @@ export default function App() {
             onDeletePerson={handleDeleteKhataPerson}
             onSaveKhataTransaction={handleSaveKhataTransaction}
             onDeleteKhataTransaction={handleDeleteKhataTransaction}
+            selectedPersonId={selectedKhataPersonId}
+            onSelectPerson={setSelectedKhataPersonId}
           />
         )}
 
@@ -406,41 +423,43 @@ export default function App() {
         )}
       </main>
 
-      {/* Clean Unobtrusive Footer */}
-      <footer className="border-t border-slate-200 bg-white py-6 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-800">Easy Khata Book</span>
-            <span aria-hidden="true">·</span>
-            <span>Digital Udhaar & Rozana Cash Ledger</span>
-          </div>
+      {/* Clean Unobtrusive Footer (Hidden when viewing person detail) */}
+      {!isPersonDetailOpen && (
+        <footer className="border-t border-slate-200 bg-white py-6 mt-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-slate-800">Easy Khata Book</span>
+              <span aria-hidden="true">·</span>
+              <span>Digital Udhaar & Rozana Cash Ledger</span>
+            </div>
 
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsBackupOpen(true)}
-              className="hover:text-slate-900 transition-colors"
-            >
-              Export CSV / JSON
-            </button>
-            <span aria-hidden="true">·</span>
-            <button
-              onClick={() => setIsSetBalanceOpen(true)}
-              className="hover:text-slate-900 transition-colors"
-            >
-              Adjust Cash Baseline
-            </button>
-            <span aria-hidden="true">·</span>
-            <button
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="hover:text-slate-900 transition-colors"
-            >
-              Top ↑
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsBackupOpen(true)}
+                className="hover:text-slate-900 transition-colors"
+              >
+                Export CSV / JSON
+              </button>
+              <span aria-hidden="true">·</span>
+              <button
+                onClick={() => setIsSetBalanceOpen(true)}
+                className="hover:text-slate-900 transition-colors"
+              >
+                Adjust Cash Baseline
+              </button>
+              <span aria-hidden="true">·</span>
+              <button
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="hover:text-slate-900 transition-colors"
+              >
+                Top ↑
+              </button>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
 
       {/* Modals */}
       <InstallAppModal
